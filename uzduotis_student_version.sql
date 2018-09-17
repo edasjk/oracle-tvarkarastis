@@ -3,7 +3,7 @@ drop table vehicle;
 drop table station;
 
 /*  2. Create Tables */ 
-CREATE TABLE vehicle
+CREATE TABLE vehicle 
 (
     vehicle_id NUMERIC(10) NOT NULL,
     vnumber VARCHAR2(10) UNIQUE,

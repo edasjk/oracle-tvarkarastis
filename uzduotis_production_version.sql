@@ -102,7 +102,7 @@ INSERT INTO station(station_id, station_name, address, stype) VALUES(station_seq
 select * from station;
 
 /* Schedules.   */
-CREATE SEQUENCE schedule_sequence;
+CREATE SEQUENCE schedule_sequence; 
 
 /* 1 */
 INSERT INTO schedule(schedule_id, vehicle_id, departure_station_id, arrival_station_id, departure_time, arrival_time)
