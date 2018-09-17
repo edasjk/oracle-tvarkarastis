@@ -37,7 +37,7 @@ CREATE TABLE schedule
 );
 
 /* 3. Irasymas i lentele. Galima rasyti 7 atskirus sakinius, vienu sakiniu siek tiek elegantiskiau
-Production versijoje reiktu naudoti ID generatoriø.
+Production versijoje reiktu naudoti ID generatori?.
 */
 
 /* Vechicles */
@@ -152,8 +152,7 @@ SELECT /* s.schedule_id, s.departure_station_id, s.arrival_station_id, */
        JOIN station arr_st ON (arr_st.station_id=s.arrival_station_id)
        ORDER BY schedule_id;
        
-/* 4.b. Uþklausa, kuri gràþins transporto priemonës numerá, iðvykimo / atvykimo stotá bei kelionës trukmæ
-valandø ir minuèiø tikslumu.  */
+/* 4.b. Užklausa, kuri gr?žins transporto priemon?s numer?, išvykimo / atvykimo stot? bei kelion?s trukm? valand? ir minu?i? tikslumu.   */
 
 SELECT /* s.departure_station_id as dep_st_id, */
        v.vnumber as "Vehicle number",
@@ -168,8 +167,7 @@ JOIN station arr_st ON (arr_st.station_id=s.arrival_station_id)
 ORDER bY schedule_id
 ;
 
-/* 4.c. Uþklausà, kuri gràþintø suplanuotø iðvykimø skaièiø ið kiekvienos stoties per visà laikotarpá. Gràþinti
-stoties pavadinimà, bei per visà laikotarpá suplanuotø kelioniø skaièiø. */
+/* 4.c. Užklaus?, kuri gr?žint? suplanuot? išvykim? skai?i? iš kiekvienos stoties per vis? laikotarp?. Gr?žinti stoties pavadinim?, bei per vis? laikotarp? suplanuot? kelioni? skai?i?.  */
 
 SELECT  st.station_name AS "Departure station", COUNT(*) as "Number of departures"
 FROM schedule s
@@ -177,8 +175,7 @@ JOIN station st ON (s.departure_station_id=st.station_id)
 GROUP BY st.station_name;
 
 
-/* 4.d. Uþklausà, kuri gràþina tuos paèius laukus kaip ir 4.a, taèiau turi atrinkti tik tuos marðrutø grafikus,
-kuriø iðvykimo laikas vëlesnis nei 2018-05-25 00:00.  */
+/* 4.d.Užklaus?, kuri gr?žina tuos pa?ius laukus kaip ir 4.a, ta?iau turi atrinkti tik tuos maršrut? grafikus, kuri? išvykimo laikas v?lesnis nei 2018-05-25 00:00.   */
 
 SELECT /* s.schedule_id, s.departure_station_id, s.arrival_station_id, */
        v.vtype AS "Vehicle type", v.vnumber AS "Vehicle number", 
@@ -195,8 +192,7 @@ SELECT /* s.schedule_id, s.departure_station_id, s.arrival_station_id, */
 
 
 
-/* 4.e. Duomenø trynimo sakiná/-ius, kuriais sëkmingai paðalintumëte visà susijusià informacijà apie traukiná,
-kurio numeris ES523. */
+/* 4.e. Duomen? trynimo sakin?/-ius, kuriais s?kmingai pašalintum?te vis? susijusi? informacij? apie traukin?, kurio numeris ES523.  */
 
 /* istrinti visus irasus schedule lenteleje, kur vehicle number yra ES523 */
 DELETE FROM  schedule 

@@ -38,7 +38,7 @@ CREATE TABLE schedule
     vehicle_id NUMERIC(10) NOT NULL,
     departure_station_id NUMERIC(10) NOT NULL,
     arrival_station_id NUMERIC(10) NOT NULL,    
-    departure_time DATE NOT NULL,  /* geresnis variantas butu Timestamp (nereiketu konvertuoti)  */
+    departure_time DATE NOT NULL,  
     arrival_time DATE NOT NULL,
     CONSTRAINT schedule_pk PRIMARY KEY(schedule_id),
     CONSTRAINT vehicle_fk3  FOREIGN KEY(vehicle_id) REFERENCES vehicle(vehicle_id),
@@ -47,8 +47,7 @@ CREATE TABLE schedule
 );
 
 
-/* 3. Irasymas i lentele. Galima rasyti 7 atskirus sakinius, vienu sakiniu siek tiek elegantiskiau
-Production versijoje reiktu naudoti ID generatoriø.
+/* 3. Irasymas i lentel?. .
 */
 
 /* Vechicles */
@@ -62,7 +61,7 @@ CREATE SEQUENCE vehicle_sequence
 DROP SEQUENCE vehicle_seq;
 
 --select vehicle_seq.nextval from dual;
-/*  Trigeris naudojamas generuoti id, nes iki 12c su id problemos */
+/*  Galima panaudoti triger? generuoti id*/
 CREATE OR REPLACE TRIGGER vehicle_on_insert
   BEFORE INSERT ON vehicle
   FOR EACH ROW
@@ -72,9 +71,7 @@ BEGIN
   FROM dual;
 END;
 
---DESC TRANSPORT;
 
-INSERT INTO transport(transport_id, ttype) values ('Train', 'Bus');
 
 select * from vehicle;
 
@@ -94,7 +91,7 @@ CREATE SEQUENCE station_sequence;
 
 INSERT INTO station(station_id, station_name, address, stype) VALUES(station_sequence.NEXTVAL, 'Vilnius train station', 'Geleþinkelio g. 16, Vilnius',
                                                                     (SELECT transport_id from transport WHERE ttype='Train'));
-INSERT INTO station(station_id, station_name, address, stype) VALUES(station_sequence.NEXTVAL, 'Ðiauliai train station', 'Dubijos g. 42A, Ðiauliai', (SELECT transport_id from transport WHERE ttype='Train'));
+INSERT INTO station(station_id, station_name, address, stype) VALUES(station_sequence.NEXTVAL, '�?iauliai train station', 'Dubijos g. 42A, �?iauliai', (SELECT transport_id from transport WHERE ttype='Train'));
 INSERT INTO station(station_id, station_name, address, stype) VALUES(station_sequence.NEXTVAL, 'Kaunas bus station', 'Vytauto pr. 124, Kaunas', (SELECT transport_id from transport WHERE ttype='Bus'));
 INSERT INTO station(station_id, station_name, address, stype) VALUES(station_sequence.NEXTVAL, 'Vilnius bus station', 'Sodø g. 22, Vilnius', (SELECT transport_id from transport WHERE ttype='Bus'));        
 INSERT INTO station(station_id, station_name, address, stype) VALUES(station_sequence.NEXTVAL, 'Klaipëda train station', 'Priestoèio g. 1, Klaipëda', (SELECT transport_id from transport WHERE ttype='Train'));
@@ -104,14 +101,14 @@ INSERT INTO station(station_id, station_name, address, stype) VALUES(station_seq
 
 select * from station;
 
-/* Schedules. Naudoju subqueries, del patogumo - kad nereiketu atsiminti id. Be to,taip panasiau i production versija  */
+/* Schedules.   */
 CREATE SEQUENCE schedule_sequence;
 
 /* 1 */
 INSERT INTO schedule(schedule_id, vehicle_id, departure_station_id, arrival_station_id, departure_time, arrival_time)
     VALUES(schedule_sequence.NEXTVAL, (SELECT vehicle_id FROM vehicle WHERE vnumber='ES523'), 
               (SELECT station_id FROM station WHERE station_name='Vilnius train station'),
-              (SELECT station_id FROM station WHERE station_name='Ðiauliai train station'),
+              (SELECT station_id FROM station WHERE station_name='�?iauliai train station'),
               TO_DATE('2018-05-02 12:40','yyyy-mm-dd hh24:mi'),
               TO_DATE('2018-05-02 15:08','yyyy-mm-dd hh24:mi')
               );
@@ -127,7 +124,7 @@ INSERT INTO schedule(schedule_id, vehicle_id, departure_station_id, arrival_stat
 /* 3 */              
 INSERT INTO schedule(schedule_id, vehicle_id, departure_station_id, arrival_station_id, departure_time, arrival_time)
     VALUES(schedule_sequence.NEXTVAL, (SELECT vehicle_id FROM vehicle WHERE vnumber='EK888'), 
-              (SELECT station_id FROM station WHERE station_name='Ðiauliai train station'),
+              (SELECT station_id FROM station WHERE station_name='�?iauliai train station'),
               (SELECT station_id FROM station WHERE station_name='Vilnius train station'),
               TO_DATE('2018-05-08 06:34','yyyy-mm-dd hh24:mi'),
               TO_DATE('2018-05-08 09:36','yyyy-mm-dd hh24:mi')
@@ -198,8 +195,8 @@ SELECT /* s.schedule_id, s.departure_station_id, s.arrival_station_id, */
        JOIN transport t ON (t.transport_id=v.transport_id)  --nauja eilute       
        ORDER BY schedule_id;
        
-/* 4.b. Uþklausa, kuri gràþins transporto priemonës numerá, iðvykimo / atvykimo stotá bei kelionës trukmæ
-valandø ir minuèiø tikslumu.  */
+/* 4.b. U�klausa, kuri gr?�ins transporto priemon?s numer?, i�vykimo / atvykimo stot?� bei kelion?s trukm?�
+valand?� ir minu?i?� tikslumu.  */
 
 SELECT /* s.departure_station_id as dep_st_id, */
        v.vnumber as "Vehicle number",
@@ -214,8 +211,8 @@ JOIN station arr_st ON (arr_st.station_id=s.arrival_station_id)
 ORDER BY schedule_id
 ;
 
-/* 4.c. Uþklausà, kuri gràþintø suplanuotø iðvykimø skaièiø ið kiekvienos stoties per visà laikotarpá. Gràþinti
-stoties pavadinimà, bei per visà laikotarpá suplanuotø kelioniø skaièiø. */
+/* 4.c. U�klaus?�, kuri gr?�int?� suplanuot?� i�vykim? skai?i?� i� kiekvienos stoties per vis?� laikotarp?. Gr?�inti
+stoties pavadinim?�, bei per vis?� laikotarp? suplanuot?� kelioni? skai?i? */
 
 SELECT  st.station_name AS "Departure station", COUNT(*) as "Number of departures"
 FROM schedule s
@@ -223,10 +220,9 @@ JOIN station st ON (s.departure_station_id=st.station_id)
 GROUP BY st.station_name;
 
 
-/* 4.d. Uþklausà, kuri gràþina tuos paèius laukus kaip ir 4.a, taèiau turi atrinkti tik tuos marðrutø grafikus,
-kuriø iðvykimo laikas vëlesnis nei 2018-05-25 00:00.  */
+/* 4.d. U�klaus?, kuri gr?�ina tuos pa?ius laukus kaip ir 4.a, ta?iau turi atrinkti tik tuos mar�rut? grafikus, kuri? i�vykimo laikas v?lesnis nei 2018-05-25 00:00. 
+e. Duomen? trynimo sakin?/-ius, kuriais s?kmingai pa�alintum?te vis? susijusi? informacij? apie traukin?, kurio numeris ES523.   */
 
-desc vehicle;
 
 SELECT /* s.schedule_id, s.departure_station_id, s.arrival_station_id, */
        t.ttype AS "Vehicle type", v.vnumber AS "Vehicle number", 
@@ -243,8 +239,7 @@ SELECT /* s.schedule_id, s.departure_station_id, s.arrival_station_id, */
        ORDER BY schedule_id;
 
 
-/* 4.e. Duomenø trynimo sakiná/-ius, kuriais sëkmingai paðalintumëte visà susijusià informacijà apie traukiná,
-kurio numeris ES523. */
+/* 4.e. Duomen? trynimo sakin?/-ius, kuriais s?kmingai pa�alintum?te vis? susijusi? informacij? apie traukin?, kurio numeris ES523. */
 
 /* istrinti visus irasus schedule lenteleje, kur vehicle number yra ES523 */
 DELETE FROM  schedule 
